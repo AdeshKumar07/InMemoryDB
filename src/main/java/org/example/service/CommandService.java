@@ -21,7 +21,7 @@ public class CommandService {
                 break;
             case GET , DELETE : parseKey(arr , cmd);
                 break;
-            case START , STOP  , EXIT:
+            case START , STOP  , EXIT , SHOW :
                 break ;
             default:
                 throw new InvalidCommandException("Unknown command type");

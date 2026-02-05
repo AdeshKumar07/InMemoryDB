@@ -1,26 +1,29 @@
 package org.example.entity;
 
+public class Entry<T>{
+    public T data ;
+    public long expiryTime ;
 
-public class Entry <T>{
-    public T data;
-    public long expireTime;
 
-    public Entry(T data, long ttl){
-        this.data = data;
-        this.expireTime = System.currentTimeMillis() + ttl;
+    @Override
+    public String toString() {
+        return data + "(" + expiryTime + ")";
     }
 
-    public Entry(T data){
-        this.data = data;
-        this.expireTime = -1;
+    public Entry(T data, long ttl) {
+        this.data = data ;
+        this.expiryTime = System.currentTimeMillis() +  ttl;
+    }
 
+    public Entry(T data) {
+        this.data = data ;
+        this.expiryTime =  -1 ;
     }
 
     public boolean isExpired(){
-        if(expireTime == -1){
-            return false;
+        if (expiryTime == -1){
+            return false ;
         }
-        return System.currentTimeMillis() > expireTime;
+        return System.currentTimeMillis() > expiryTime ;
     }
-
 }

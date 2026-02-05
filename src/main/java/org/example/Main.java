@@ -7,91 +7,81 @@ import org.example.exception.InvalidCommandException;
 import org.example.exception.InvalidKeyException;
 import org.example.service.CommandService;
 import org.example.service.DbService;
+import org.example.service.IDbservice;
 
-import java.util.*;
+import java.util.Scanner;
+import org.example.exception.DbUnavaiableException;
+import org.example.exception.InvalidKeyException;
+import org.example.service.DbService;
+
+import java.util.Scanner;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        DbService dbService = new DbService();
+        Scanner scanner = new Scanner(System.in);
         CommandService commandService = new CommandService();
+        DbService dbService = new DbService();
 
-        String[] commands = {
-                "PUT 1 hello 6000",
-                "PUT 2 100 3000",
-                "GET 1",
-                "GET 2",
-                "DELETE 1",
-                "GET 1",
-                "EXIT"
-        };
+        System.out.println("In-memory DB started");
+        System.out.println("Commands: PUT key value [ttl], GET key, DELETE key, START, STOP, EXIT");
 
-
-        System.out.println("================================");
-        System.out.println(" In-Memory DB Service Started ");
-        System.out.println("================================");
-
-        for (String input : commands) {
-
+        while (true) {
             try {
-                System.out.println("> " + input);
+                System.out.print("> ");
+                String input = scanner.nextLine().trim();
+
+                if (input.isEmpty()) continue;
 
                 Command command = commandService.parse(input);
 
                 switch (command.type) {
 
                     case PUT:
-                        if (command.ttl > 0) {
-                            dbService.put(
-                                    command.key,
-                                    parseValue(command.rawValue),
-                                    command.ttl
-                            );
+                        if (command.ttl !=-1) {
+                            dbService.put(command.key, command.rawValue, command.ttl);
                         } else {
-                            dbService.put(
-                                    command.key,
-                                    parseValue(command.rawValue)
-                            );
+                            dbService.put(command.key, command.rawValue);
                         }
                         System.out.println("OK");
                         break;
 
                     case GET:
                         Object value = dbService.get(command.key);
-                        System.out.println("VALUE = " + value);
+                        System.out.println(value);
                         break;
 
                     case DELETE:
                         dbService.delete(command.key);
-                        System.out.println("DELETED");
+                        System.out.println("OK");
                         break;
 
-                    case EXIT:
-                        System.out.println("Shutting down DB...");
-                        return;
-
                     case START:
-                        System.out.println("DB already running");
+                        dbService.start();
+                        System.out.println("DB started");
                         break;
 
                     case STOP:
+                        dbService.stop();
                         System.out.println("DB stopped");
                         break;
+
+                    case EXIT:
+                        System.out.println("Exiting...");
+                        return;
+
+                    case SHOW :
+                        dbService.showDB();
+                        break ;
+
+                    default:
+                        System.out.println("Unknown command");
                 }
 
             } catch (Exception e) {
                 System.out.println("ERROR: " + e.getMessage());
             }
         }
-    }
-
-    private static Object parseValue(String value) {
-        try { return Integer.parseInt(value); } catch (Exception ignored) {}
-        try { return Double.parseDouble(value); } catch (Exception ignored) {}
-        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
-            return Boolean.parseBoolean(value);
-        }
-        return value;
     }
 }

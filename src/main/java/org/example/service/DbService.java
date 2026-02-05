@@ -24,6 +24,13 @@ public class DbService  implements IDbservice{
         data.entrySet().removeIf(entry -> entry.getValue().isExpired());
     }
 
+    private void checkDbState() {
+        if (!state) {
+            throw new DbUnavaiableException("Unable to connect to Db");
+        }
+    }
+
+
 
     private  void backGroundTask(){
 
@@ -55,9 +62,7 @@ public class DbService  implements IDbservice{
     @Override
     synchronized public void put(Integer key, Object data , long ttl) {
 
-        if(!state){
-            throw new DbUnavaiableException("Unable to connect to Db") ;
-        }
+        checkDbState();
 
         Entry<Object> ob = new Entry<>(data , ttl)  ;
         this.data.put(key , ob) ;
@@ -66,6 +71,7 @@ public class DbService  implements IDbservice{
     @Override
     synchronized public  void put(Integer key, Object data) {
 
+        checkDbState() ;
         Entry<Object> ob = new Entry<>(data)  ;
         this.data.put(key , ob) ;
     }
@@ -74,7 +80,7 @@ public class DbService  implements IDbservice{
     // Lazy delete
     @Override
     synchronized public  Object get(Integer key) {
-
+        checkDbState() ;
         if(data.containsKey(key)){
             if(data.get(key).isExpired()){
                 data.remove(key)  ;
@@ -89,6 +95,7 @@ public class DbService  implements IDbservice{
 
     @Override
     synchronized public  void delete(Integer key) {
+        checkDbState() ;
         if(data.containsKey(key)){
             data.remove(key) ;
         }
@@ -103,6 +110,11 @@ public class DbService  implements IDbservice{
 
     public void stop(){
         this.state = false ;
+    }
+
+    public void showDB(){
+        checkDbState();
+        System.out.println(data);
     }
 
 
