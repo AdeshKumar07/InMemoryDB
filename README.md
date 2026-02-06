@@ -4,6 +4,8 @@
 This project is a command-driven, in-memory database implemented in Java.
 It supports Methods, integer keys, generic values, TTL (time-to-live)
 
+---
+
 ## Features
 - String-based Method
 - Genric value storage
@@ -13,6 +15,8 @@ It supports Methods, integer keys, generic values, TTL (time-to-live)
 - Background cleanup thread
 - Thread-safe operations
 - START / STOP database lifecycle
+
+---
 
 ## Project structure
 
@@ -95,4 +99,5 @@ GET 2
 ## 👨‍💻 Author
 Adesh Kumar  
 Java FullStack Developer 
+
 
