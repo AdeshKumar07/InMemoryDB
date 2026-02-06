@@ -27,9 +27,9 @@ src/main/java
 │ ├── DbService.java
 │ └── IDbservices.java
 └── exception
-├── DbUnavaiableException.java
-├── InvalidCommandException.java
-├── InvalidCommandexception
+  ├── DbUnavaiableException.java
+  ├── InvalidCommandException.java
+  └── InvalidCommandexception
 
 ---
 
@@ -95,3 +95,4 @@ GET 2
 ## 👨‍💻 Author
 Adesh Kumar  
 Java FullStack Developer 
+
